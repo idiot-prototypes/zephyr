@@ -17,7 +17,7 @@ BUILD_ASSERT(DT_NODE_HAS_STATUS(DEFAULT_RADIO_NODE, okay),
 	     "No default LoRa radio specified in DT");
 
 static struct lora_modem_config modem_config = {
-	.frequency = 0,
+	.frequency = 868000000,
 	.bandwidth = BW_125_KHZ,
 	.datarate = SF_10,
 	.coding_rate = CR_4_5,
