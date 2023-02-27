@@ -145,7 +145,7 @@ struct modbus_context {
  * @retval           Pointer to interface context or NULL
  *                   if interface not available or not configured;
  */
-struct modbus_context *modbus_get_context(const uint8_t iface);
+struct modbus_context *modbus_get_context(const int iface);
 
 /**
  * @brief Get Modbus interface index.

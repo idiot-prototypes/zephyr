@@ -559,7 +559,7 @@ int modbus_init_client(const int iface, struct modbus_iface_param param);
  *
  * @retval           0 If the function was successful
  */
-int modbus_disable(const uint8_t iface);
+int modbus_disable(const int iface);
 
 /**
  * @brief Submit raw ADU

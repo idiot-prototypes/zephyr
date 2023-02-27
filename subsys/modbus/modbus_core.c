@@ -147,19 +147,24 @@ int modbus_tx_wait_rx_adu(struct modbus_context *ctx)
 	return ctx->rx_adu_err;
 }
 
-struct modbus_context *modbus_get_context(const uint8_t iface)
+struct modbus_context *modbus_get_context(const int iface)
 {
 	struct modbus_context *ctx;
 
+	if (iface < 0) {
+		LOG_ERR("Interface %i is invalid", iface);
+		return NULL;
+	}
+
 	if (iface >= ARRAY_SIZE(mb_ctx_tbl)) {
-		LOG_ERR("Interface %u not available", iface);
+		LOG_ERR("Interface %i not available", iface);
 		return NULL;
 	}
 
 	ctx = &mb_ctx_tbl[iface];
 
 	if (!atomic_test_bit(&ctx->state, MODBUS_STATE_CONFIGURED)) {
-		LOG_ERR("Interface %u not configured", iface);
+		LOG_ERR("Interface %i not configured", iface);
 		return NULL;
 	}
 
@@ -188,19 +193,24 @@ int modbus_iface_get_by_name(const char *iface_name)
 	return -ENODEV;
 }
 
-static struct modbus_context *modbus_init_iface(const uint8_t iface)
+static struct modbus_context *modbus_init_iface(const int iface)
 {
 	struct modbus_context *ctx;
 
+	if (iface < 0) {
+		LOG_ERR("Interface %i is invalid", iface);
+		return NULL;
+	}
+
 	if (iface >= ARRAY_SIZE(mb_ctx_tbl)) {
-		LOG_ERR("Interface %u not available", iface);
+		LOG_ERR("Interface %i not available", iface);
 		return NULL;
 	}
 
 	ctx = &mb_ctx_tbl[iface];
 
 	if (atomic_test_and_set_bit(&ctx->state, MODBUS_STATE_CONFIGURED)) {
-		LOG_ERR("Interface %u already used", iface);
+		LOG_ERR("Interface %i already used", iface);
 		return NULL;
 	}
 
@@ -371,14 +381,14 @@ init_client_error:
 	return rc;
 }
 
-int modbus_disable(const uint8_t iface)
+int modbus_disable(const int iface)
 {
 	struct modbus_context *ctx;
 	struct k_work_sync work_sync;
 
 	ctx = modbus_get_context(iface);
 	if (ctx == NULL) {
-		LOG_ERR("Interface %u not initialized", iface);
+		LOG_ERR("Interface %i not initialized", iface);
 		return -EINVAL;
 	}
 
@@ -402,7 +412,7 @@ int modbus_disable(const uint8_t iface)
 	ctx->mbs_user_cb = NULL;
 	atomic_clear_bit(&ctx->state, MODBUS_STATE_CONFIGURED);
 
-	LOG_INF("Modbus interface %u disabled", iface);
+	LOG_INF("Modbus interface %i disabled", iface);
 
 	return 0;
 }
