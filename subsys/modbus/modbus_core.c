@@ -159,7 +159,7 @@ struct modbus_context *modbus_get_context(const uint8_t iface)
 	ctx = &mb_ctx_tbl[iface];
 
 	if (!atomic_test_bit(&ctx->state, MODBUS_STATE_CONFIGURED)) {
-		LOG_ERR("Interface not configured");
+		LOG_ERR("Interface %u not configured", iface);
 		return NULL;
 	}
 
@@ -200,7 +200,7 @@ static struct modbus_context *modbus_init_iface(const uint8_t iface)
 	ctx = &mb_ctx_tbl[iface];
 
 	if (atomic_test_and_set_bit(&ctx->state, MODBUS_STATE_CONFIGURED)) {
-		LOG_ERR("Interface already used");
+		LOG_ERR("Interface %u already used", iface);
 		return NULL;
 	}
 
